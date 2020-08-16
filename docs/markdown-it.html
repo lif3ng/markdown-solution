@@ -1,0 +1,137 @@
+<h1>markdown-it</h1>
+<p><a href="https://github.com/markdown-it/markdown-it">代码仓库</a></p>
+<p><a href="https://markdown-it.github.io/markdown-it/">API 文档</a></p>
+<p><a href="https://markdown-it.github.io">Demo</a></p>
+<ul>
+  <li>
+    遵循
+    <strong><a href="http://spec.commonmark.org/">CommonMark 标准</a></strong>
+  </li>
+  <li>增加 语法扩展 和 语法糖 (URL autolinking, typographer).</li>
+  <li>可配置语法。可以添加新规则（rule），甚至替换现有规则。</li>
+</ul>
+<h2>安装</h2>
+<h3>Node.js</h3>
+<pre><code>npm install markdown-it --save
+</code></pre>
+<h3>浏览器 CDN 引入</h3>
+<h2>使用</h2>
+<h3>基本使用</h3>
+<pre><code class="lang-js">// node.js, 经典方式:
+var MarkdownIt = require(&quot;markdown-it&quot;),
+  md = new MarkdownIt();
+var result = md.render(&quot;# markdown-it rulezz!&quot;); // '&lt;h1&gt;markdown-it rulezz!&lt;/h1&gt;\n'
+
+// node.js, 语法糖方式:
+var md = require(&quot;markdown-it&quot;)();
+var result = md.render(&quot;# markdown-it rulezz!&quot;);
+
+// 单行渲染，没有 `&lt;p&gt;` 包裹
+var md = require(&quot;markdown-it&quot;)();
+var result = md.renderInline(&quot;__markdown-it__ rulezz!&quot;); // '&lt;strong&gt;markdown-it&lt;/strong&gt; rulezz!'
+</code></pre>
+<h3>通过预置（presets）和选项（options）初始化</h3>
+<p>
+  预置定义了规则（rules) 和选项（options）的组合，可选值为:
+  <code>&quot;commonmark&quot;</code>, <code>&quot;zero&quot;</code>,
+  <code>&quot;default&quot;</code>(不传入参数)
+</p>
+<pre><code class="lang-js">// commonmark mode
+var md = require(&quot;markdown-it&quot;)(&quot;commonmark&quot;);
+
+// default mode
+var md = require(&quot;markdown-it&quot;)();
+
+// enable everything
+var md = require(&quot;markdown-it&quot;)({
+  html: true,
+  linkify: true,
+  typographer: true,
+});
+</code></pre>
+<table>
+  <thead>
+    <tr>
+      <th>options</th>
+      <th style="text-align: center;">commonmark</th>
+      <th style="text-align: center;">zero</th>
+      <th style="text-align: center;">default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>html</td>
+      <td style="text-align: center;">✅</td>
+      <td style="text-align: center;"></td>
+      <td style="text-align: center;"></td>
+    </tr>
+    <tr>
+      <td>xhtmlOut</td>
+      <td style="text-align: center;">✅</td>
+      <td style="text-align: center;"></td>
+      <td style="text-align: center;"></td>
+    </tr>
+    <tr>
+      <td>breaks</td>
+      <td style="text-align: center;"></td>
+      <td style="text-align: center;"></td>
+      <td style="text-align: center;"></td>
+    </tr>
+    <tr>
+      <td>langPrefix</td>
+      <td style="text-align: center;">'language-'</td>
+      <td style="text-align: center;">'language-'</td>
+      <td style="text-align: center;">'language-'</td>
+    </tr>
+    <tr>
+      <td>linkify</td>
+      <td style="text-align: center;"></td>
+      <td style="text-align: center;"></td>
+      <td style="text-align: center;"></td>
+    </tr>
+    <tr>
+      <td>typographer</td>
+      <td style="text-align: center;"></td>
+      <td style="text-align: center;"></td>
+      <td style="text-align: center;"></td>
+    </tr>
+    <tr>
+      <td>quotes</td>
+      <td style="text-align: center;">'\u201c\u201d\u2018\u2019' -&gt; “”‘’</td>
+      <td style="text-align: center;">“”‘’</td>
+      <td style="text-align: center;">“”‘’</td>
+    </tr>
+    <tr>
+      <td>highlight</td>
+      <td style="text-align: center;">null</td>
+      <td style="text-align: center;">null</td>
+      <td style="text-align: center;">null</td>
+    </tr>
+  </tbody>
+</table>
+<h2>preset</h2>
+<ul>
+  <li>
+    <a
+      href="https://github.com/markdown-it/markdown-it/blob/master/lib/presets/commonmark.js"
+      ><code>commonmark</code></a
+    >
+    严格遵循 <a href="https://commonmark.org/">CommonMark</a> 模式
+  </li>
+  <li>
+    <a
+      href="https://github.com/markdown-it/markdown-it/blob/master/lib/presets/default.js"
+      ><code>default</code></a
+    >
+    与 GFM 类似，未指定 preset 名称时使用。启用所有可用规则，但不支持
+    html、typographer 和 autolinker.
+  </li>
+  <li>
+    <a
+      href="https://github.com/markdown-it/markdown-it/blob/master/lib/presets/zero.js"
+      ><code>zero</code></a
+    >
+    禁用所有规则. 可通过
+    <code>.enable()</code> 快速设置。比如在只需要加粗倾斜时使用。
+  </li>
+</ul>
