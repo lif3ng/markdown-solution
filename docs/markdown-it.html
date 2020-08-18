@@ -135,3 +135,39 @@ var md = require(&quot;markdown-it&quot;)({
     <code>.enable()</code> 快速设置。比如在只需要加粗倾斜时使用。
   </li>
 </ul>
+<div class="sidebar">
+  <ul>
+    <li><a href="why.html">为什么想写 Markdown 相关的前端解决方案</a></li>
+    <li><a href="markdown-it.html">markdown-it</a></li>
+    <li><a href="reference.html">参考内容</a></li>
+    <li><a href="spec.html">规范</a></li>
+  </ul>
+</div>
+<style>
+  body {
+    margin-left: 300px;
+  }
+  a {
+    text-decoration: none;
+    color: #0366d6;
+  }
+  a:hover {
+    color: #0252ab;
+  }
+  .sidebar {
+    position: fixed;
+    width: 300px;
+    top: 0;
+    left: 0;
+  }
+  .sidebar ul {
+    list-style: none;
+    padding: 20px;
+  }
+  .sidebar li + li {
+    margin-top: 20px;
+  }
+  .sidebar a:hover {
+    font-weight: bold;
+  }
+</style>

@@ -1,0 +1,58 @@
+<h1>为什么想写 Markdown 相关的前端解决方案</h1>
+<p>Markdown 是 文本 -&gt; HTML 的通用解决方案，前端文档都使用了 Markdown。</p>
+<p>Markdown 可以一次编写，通过 CICD 发布到多个地方。</p>
+<p>
+  Markdown 可能是开发者文字输出的主要形式，可以用于构建易于检索的个人知识库。
+</p>
+<p>
+  前端文档通常会使用社区的通用解决方案，比如： Vue 相关组件会使用
+  <code>Vuepress</code>, React 相关组件会使用 <code>Docusaurus</code>.
+  这些文档框架提供了代码高亮等多种功能。这些框架的生态都提供了丰富的 Plugin
+  可供选择，可以有更高效的组织内容或者在文档中嵌入其他内容。
+</p>
+<p>
+  当想要按照自己的想法嵌入 Demo
+  或其他内容时，通常需要根据文档理清依赖链，在合适的地方编写代码实现相关逻辑。
+</p>
+<p>熟悉常见的 Markdown 解决方案可便于使用现有轮子和自己造轮子。</p>
+<p>
+  该项目会尝试使用 Markdown 常见构建方案，构建一个
+  <code>介绍 Markdown 常见构建方案</code> 的页面，摘抄汉化部分文档和
+  Demo，并通过 <code>Github Action</code> 将其发布在 Pages 页面上。
+</p>
+<div class="sidebar">
+  <ul>
+    <li><a href="why.html">为什么想写 Markdown 相关的前端解决方案</a></li>
+    <li><a href="markdown-it.html">markdown-it</a></li>
+    <li><a href="reference.html">参考内容</a></li>
+    <li><a href="spec.html">规范</a></li>
+  </ul>
+</div>
+<style>
+  body {
+    margin-left: 300px;
+  }
+  a {
+    text-decoration: none;
+    color: #0366d6;
+  }
+  a:hover {
+    color: #0252ab;
+  }
+  .sidebar {
+    position: fixed;
+    width: 300px;
+    top: 0;
+    left: 0;
+  }
+  .sidebar ul {
+    list-style: none;
+    padding: 20px;
+  }
+  .sidebar li + li {
+    margin-top: 20px;
+  }
+  .sidebar a:hover {
+    font-weight: bold;
+  }
+</style>

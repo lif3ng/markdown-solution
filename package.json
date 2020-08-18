@@ -9,11 +9,15 @@
     "husky": "^4.2.5",
     "markdown-it": "^11.0.0",
     "prettier": "2.0.5",
-    "pretty-quick": "^2.0.1"
+    "pretty-quick": "^2.0.1",
+    "stylus": "^0.54.8"
   },
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
+  },
+  "scripts": {
+    "start": "node scripts/start"
   }
 }

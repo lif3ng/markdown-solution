@@ -1,0 +1,23 @@
+sidebar-width = 300px
+primary-color = #0366d6
+body
+  margin-left sidebar-width
+a
+  text-decoration none
+  color primary-color
+  &:hover
+    color primary-color - 20%
+.sidebar
+  position fixed
+  width sidebar-width
+  top 0
+  left 0
+  ul 
+    list-style: none
+    padding 20px
+  li + li
+    margin-top 20px
+  a
+    &:hover
+      font-weight: bold
+    
