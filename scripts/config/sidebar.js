@@ -1,1 +1,7 @@
-module.exports = ["why", "markdown-it", "reference", "spec"];
+module.exports = [
+  "why",
+  "markdown-it",
+  "markdown-it-architecture",
+  "reference",
+  "spec",
+];

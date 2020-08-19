@@ -1,0 +1,124 @@
+<h1>markdown-it 设计原则</h1>
+<p>
+  <a
+    href="https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md"
+    >原文</a
+  >
+</p>
+<h2>数据流 Data flow</h2>
+<p>
+  输入数据经由规则 (rules) 嵌套链处理。有三个嵌套链：<code>core</code>,
+  <code>block</code>, <code>inline</code>.
+</p>
+<pre><code>core
+    core.rule1 (normalize)
+    ...
+    core.ruleX
+
+    block
+        block.rule1 (blockquote)
+        ...
+        block.ruleX
+
+    core.ruleX1 (intermediate rule that applies on block tokens, nothing yet)
+    ...
+    core.ruleXX
+
+    inline (applied to each block token with &quot;inline&quot; type)
+        inline.rule1 (text)
+        ...
+        inline.ruleX
+
+    core.ruleYY (applies to all tokens)
+    ... (abbreviation, footnote, typographer, linkifier)
+
+</code></pre>
+<p>
+  解析后的结果是一个 <em>token 列表</em>, 将通过 <code>renderer</code> 生成
+  HTML.
+</p>
+<p>
+  这些 token 能够将自身再次解析为更多的 token (如：一个
+  <code>list token</code> 可以被分解成多个 <code>inline tokens</code>).
+</p>
+<p>
+  <code>env</code> 沙盒可以与 token 一同使用，为解析器和渲染器注入外部变量。
+</p>
+<p>
+  每个链 (core / block / inline) 在解析数据时使用一个独立的
+  <code>state</code> 对象，因此每个解析操作都是独立的，可以随时禁用。
+</p>
+<h2>Token stream</h2>
+<p>使用更底层的数据表示形式 <em>tokens</em> 代替传统的 AST. 区别很简单:</p>
+<ul>
+  <li>Tokens 是个简单序列 (Array).</li>
+  <li>开始标签和闭合标签是分离的。</li>
+  <li>
+    特殊的 token 对象 &quot;inline containers&quot; 拥有嵌套的 tokens.
+    是内联标记 (bold, italic, text, ...) 的序列。
+  </li>
+</ul>
+<p>
+  可以通过
+  <a href="https://github.com/markdown-it/markdown-it/blob/master/lib/token.js"
+    >token class</a
+  >
+  查看每个 token 项的详细信息。
+</p>
+<p>In total, a token stream is:</p>
+<ul>
+  <li>
+    On the top level - array of paired or single &quot;block&quot; tokens:
+    <ul>
+      <li>open/close for headers, lists, blockquotes, paragraphs, ...</li>
+      <li>
+        codes, fenced blocks, horizontal rules, html blocks, inlines containers
+      </li>
+    </ul>
+  </li>
+  <li>
+    Each inline token have a <code>.children</code> property with a nested token
+    stream for inline content:
+    <ul>
+      <li>open/close for strong, em, link, code, ...</li>
+      <li>text, line breaks</li>
+    </ul>
+  </li>
+</ul>
+<div class="sidebar">
+  <ul>
+    <li><a href="why.html">为什么想写 Markdown 相关的前端解决方案</a></li>
+    <li><a href="markdown-it.html">markdown-it</a></li>
+    <li><a href="markdown-it-architecture.html">markdown-it 设计原则</a></li>
+    <li><a href="reference.html">参考内容</a></li>
+    <li><a href="spec.html">规范</a></li>
+  </ul>
+</div>
+<style>
+  body {
+    margin-left: 300px;
+  }
+  a {
+    text-decoration: none;
+    color: #0366d6;
+  }
+  a:hover {
+    color: #0252ab;
+  }
+  .sidebar {
+    position: fixed;
+    width: 300px;
+    top: 0;
+    left: 0;
+  }
+  .sidebar ul {
+    list-style: none;
+    padding: 20px;
+  }
+  .sidebar li + li {
+    margin-top: 20px;
+  }
+  .sidebar a:hover {
+    font-weight: bold;
+  }
+</style>
