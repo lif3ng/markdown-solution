@@ -1,5 +1,5 @@
 const useMarkdownIt = require("./useMarkdownIt");
-const getHtmlByContent = require("./useMarkdownIt").getHtmlByContent;
+const { getHtmlByContent, writeTOC } = require("./useMarkdownIt");
 const sideBarList = require("./config/sidebar");
 const appendToHtml = require("./htmlUtils").appendToHtml;
 const generateCss = require("./handleStyle");
@@ -14,14 +14,13 @@ sideBarList.forEach((fileName) => {
   });
 });
 
-const sideBarHtml =
-  '<div class="sidebar">' +
-  getHtmlByContent(
-    articleList.map(({ path, title }) => `- [${title}](${path})`).join("\n")
-  ) +
-  "</div>";
+const tocUlHtml = getHtmlByContent(
+  articleList.map(({ path, title }) => `- [${title}](${path})`).join("\n")
+);
 
-console.log(sideBarHtml);
+writeTOC(tocUlHtml);
+
+const sideBarHtml = '<div class="sidebar">' + tocUlHtml + "</div>";
 
 generateCss.then((css) => {
   sideBarList.forEach((fileName) => {

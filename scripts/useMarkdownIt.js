@@ -32,3 +32,10 @@ module.exports = (originFileName) => {
 };
 
 module.exports.getHtmlByContent = (content) => md.render(content);
+
+module.exports.writeTOC = (html) => {
+  fs.writeFileSync(
+    path.join(__dirname, "../docs/index.html"),
+    [md.render("# TOC"), html].join("\n")
+  );
+};
