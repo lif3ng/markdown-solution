@@ -65,10 +65,10 @@
   >
   查看每个 token 项的详细信息。
 </p>
-<p>In total, a token stream is:</p>
+<p>token stream 是:</p>
 <ul>
   <li>
-    On the top level - array of paired or single &quot;block&quot; tokens:
+    在顶级 - 成对的或单个 &quot;block&quot; tokens 的数组:
     <ul>
       <li>open/close for headers, lists, blockquotes, paragraphs, ...</li>
       <li>
@@ -77,14 +77,64 @@
     </ul>
   </li>
   <li>
-    Each inline token have a <code>.children</code> property with a nested token
-    stream for inline content:
+    每个 inline token 都有 <code>.children</code> 属性，带有 inline 内容的嵌套
+    token stream:
     <ul>
       <li>open/close for strong, em, link, code, ...</li>
       <li>text, line breaks</li>
     </ul>
   </li>
 </ul>
+<p>为什么不用 AST? 遵循 KISS 原则，就我们的任务而言并不需要它。</p>
+<p>
+  如果你想，你不需要渲染器，调用解析器（parser）就能将 token stream 转换为 AST.
+</p>
+<p>关于 token 的更多细节:</p>
+<ul>
+  <li>
+    <a
+      href="https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js"
+      >Renderer source</a
+    >
+  </li>
+  <li>
+    <a
+      href="https://github.com/markdown-it/markdown-it/blob/master/lib/token.js"
+      >Token source</a
+    >
+  </li>
+  <li>
+    <a href="https://markdown-it.github.io/">Live demo</a> - type your text and
+    click <code>debug</code> tab.
+  </li>
+</ul>
+<h2>规则 Rules</h2>
+<p>
+  Rules 是一些函数, 围绕解析器 <code>state</code> 对象进行一些操作.
+  一条规则与一个或多个 <em>链条</em> 相关联，并且是唯一的. 例如一个
+  <code>blockquote</code> token 与 <code>blockquote</code>,
+  <code>paragraph</code>, <code>heading</code>, <code>list</code> 链相关联
+</p>
+<p>
+  规则经由
+  <a href="https://markdown-it.github.io/markdown-it/#Ruler">Ruler</a>
+  实例，通过名称进行管理， 可以通过
+  <a href="https://markdown-it.github.io/markdown-it/#MarkdownIt">MarkdownIt</a>
+  的方法 <code>enabled</code> / <code>disabled</code> 进行启用或禁用。
+</p>
+<p>
+  注意, 一些规则有 <code>validation mode</code> - 这种模式下，规则不能修改 token
+  stream, and only look ahead for the end of a token. 这是个重要的设计模式 - a
+  token stream is &quot;write only&quot; on block &amp; inline parse stages.
+</p>
+<p>
+  解析器（Parsers） 被设计成使规则 (rules) 彼此独立。
+  你可以安全的启用/禁用他们，或者增加个新规则。<br />
+  关于如何创建新规则没有通用的套路 ——
+  数据隔离良好的分布式状态机的设计是一项艰巨的任务 (design of distributed state
+  machines with good data isolation is a tricky business).<br />
+  你可以从现有的规则 (rule) 和插件 (plugin) 中探索可行性。
+</p>
 <div class="sidebar">
   <ul>
     <li><a href="why.html">为什么想写 Markdown 相关的前端解决方案</a></li>
@@ -104,6 +154,9 @@
   }
   a:hover {
     color: #0252ab;
+  }
+  pre {
+    background: #f6f8fa;
   }
   .sidebar {
     position: fixed;

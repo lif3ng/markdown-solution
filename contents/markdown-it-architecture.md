@@ -49,11 +49,33 @@ core
 
 可以通过 [token class](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js) 查看每个 token 项的详细信息。
 
-In total, a token stream is:
+token stream 是:
 
-- On the top level - array of paired or single "block" tokens:
+- 在顶级 - 成对的或单个 "block" tokens 的数组:
   - open/close for headers, lists, blockquotes, paragraphs, ...
   - codes, fenced blocks, horizontal rules, html blocks, inlines containers
-- Each inline token have a `.children` property with a nested token stream for inline content:
+- 每个 inline token 都有 `.children` 属性，带有 inline 内容的嵌套 token stream:
   - open/close for strong, em, link, code, ...
   - text, line breaks
+
+为什么不用 AST? 遵循 KISS 原则，就我们的任务而言并不需要它。
+
+如果你想，你不需要渲染器，调用解析器（parser）就能将 token stream 转换为 AST.
+
+关于 token 的更多细节:
+
+- [Renderer source](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js)
+- [Token source](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js)
+- [Live demo](https://markdown-it.github.io/) - type your text and click `debug` tab.
+
+## 规则 Rules
+
+Rules 是一些函数, 围绕解析器 `state` 对象进行一些操作. 一条规则与一个或多个 _链条_ 相关联，并且是唯一的. 例如一个 `blockquote` token 与 `blockquote`, `paragraph`, `heading`, `list` 链相关联
+
+规则经由 [Ruler](https://markdown-it.github.io/markdown-it/#Ruler) 实例，通过名称进行管理， 可以通过 [MarkdownIt](https://markdown-it.github.io/markdown-it/#MarkdownIt) 的方法 `enabled` / `disabled` 进行启用或禁用。
+
+注意, 一些规则有 `validation mode` - 这种模式下，规则不能修改 token stream, and only look ahead for the end of a token. 这是个重要的设计模式 - a token stream is "write only" on block & inline parse stages.
+
+解析器（Parsers） 被设计成使规则 (rules) 彼此独立。 你可以安全的启用/禁用他们，或者增加个新规则。
+关于如何创建新规则没有通用的套路 —— 数据隔离良好的分布式状态机的设计是一项艰巨的任务 (design of distributed state machines with good data isolation is a tricky business).
+你可以从现有的规则 (rule) 和插件 (plugin) 中探索可行性。
