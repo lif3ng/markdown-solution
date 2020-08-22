@@ -135,6 +135,114 @@
   machines with good data isolation is a tricky business).<br />
   你可以从现有的规则 (rule) 和插件 (plugin) 中探索可行性。
 </p>
+<h2>渲染器 Renderer</h2>
+<p>
+  Token stream 生成之后, 将通过
+  <a
+    href="https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js"
+    >渲染器(renderer)</a
+  >.<br />
+  渲染器将遍历所有 token, 并将每个 token 传递给 token type 的同名规则 (rule).
+</p>
+<p>
+  渲染器规则位于 <code>md.renderer.rules[name]</code>, 是具有相同标识
+  (signature) 的简单函数。
+</p>
+<pre><code class="lang-js">function (tokens, idx, options, env, renderer) {
+  //...
+  return htmlResult;
+}
+</code></pre>
+<p>
+  在许多场景下，即使没有侵入式解析也能轻松修改输出。<br />
+  For example, let's replace images with vimeo links to player's iframe:<br />
+  例如，使用指向 vimeo 链接的播放器 iframe 替换图片：
+</p>
+<pre><code class="lang-js">var md = require(&quot;markdown-it&quot;)();
+
+var defaultRender = md.renderer.rules.image,
+  vimeoRE = /^https?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
+
+md.renderer.rules.image = function (tokens, idx, options, env, self) {
+  var token = tokens[idx],
+    aIndex = token.attrIndex(&quot;src&quot;);
+
+  if (vimeoRE.test(token.attrs[aIndex][1])) {
+    var id = token.attrs[aIndex][1].match(vimeoRE)[2];
+
+    return (
+      '&lt;div class=&quot;embed-responsive embed-responsive-16by9&quot;&gt;\n' +
+      '  &lt;iframe class=&quot;embed-responsive-item&quot; src=&quot;//player.vimeo.com/video/' +
+      id +
+      '&quot;&gt;&lt;/iframe&gt;\n' +
+      &quot;&lt;/div&gt;\n&quot;
+    );
+  }
+
+  // pass token to default renderer.
+  return defaultRender(tokens, idx, options, env, self);
+};
+</code></pre>
+<p>这还有一个例子, 为所有链接添加 <code>target=&quot;_blank&quot;</code>:</p>
+<pre><code class="lang-js">// Remember old renderer, if overridden, or proxy to default renderer
+var defaultRender =
+  md.renderer.rules.link_open ||
+  function (tokens, idx, options, env, self) {
+    return self.renderToken(tokens, idx, options);
+  };
+
+md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+  // If you are sure other plugins can't add `target` - drop check below
+  var aIndex = tokens[idx].attrIndex(&quot;target&quot;);
+
+  if (aIndex &lt; 0) {
+    tokens[idx].attrPush([&quot;target&quot;, &quot;_blank&quot;]); // add new attribute
+  } else {
+    tokens[idx].attrs[aIndex][1] = &quot;_blank&quot;; // replace value of existing attr
+  }
+
+  // pass token to default renderer.
+  return defaultRender(tokens, idx, options, env, self);
+};
+</code></pre>
+<p>
+  注意，如果你需要增加属性, 可以在没有渲染器覆盖 (renderer override)
+  的情况下进行。
+</p>
+<p>
+  例如，你可以在 <code>core</code> 链上更新
+  token。这比直接覆盖渲染器要慢一些，但更简单。让我们用<br />
+  <a href="https://github.com/markdown-it/markdown-it-for-inline"
+    >markdown-for-inline</a
+  >
+  插件<br />
+  来完成上一个例子：
+</p>
+<!-- prettier-ignore -->
+<pre><code class="lang-js">var iterator = require('markdown-it-for-inline');
+
+var md = require('markdown-it')()
+            .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
+              var aIndex = tokens[idx].attrIndex('target');
+
+              if (aIndex &lt; 0) {
+                tokens[idx].attrPush(['target', '_blank']);
+              } else {
+                tokens[idx].attrs[aIndex][1] = '_blank';
+              }
+            });
+</code></pre>
+<p>
+  你也可以写自己的渲染器去生成 HTML 以为的其他格式，例如 JSON/XML...
+  甚至可以用它生成 AST.
+</p>
+<h2>总结</h2>
+<p>再次回顾下 数据流 中提到的流程:</p>
+<ol>
+  <li>Blocks 解析, 使用 block tokens 填充顶层 token stream.</li>
+  <li>Inline 容器内容, 使用 <code>.children</code> 属性填充.</li>
+  <li>开始渲染.</li>
+</ol>
 <div class="sidebar">
   <ul>
     <li><a href="why.html">为什么想写 Markdown 相关的前端解决方案</a></li>
